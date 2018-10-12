@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>lazy-img-load</title>
+        <style>
+         * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+         }
+         header {
+             width: 100%;
+             height: 100px;
+             border: 1px solid #ddd;
+             background-color: lightblue;
+             text-align: center;
+         }
+         header p {
+             line-height: 100px;
+             font-weight: bold;
+         }
+         main {
+             width: 900px;
+             margin: 0 auto;
+             border: 1px solid #000;
+             border-top-width: 0;
+             min-height: calc(100vh - 100px - 2px - 1px);
+             display: flex;
+             flex-direction: column;
+             justify-content: space-between;
+             align-items: center;
+             padding-bottom: 20px;
+         }
+         nav {
+             display: flex;
+             flex-direction: row;
+             justify-content: center;
+             align-items: center;
+             width: 100%;
+             height: 600px;
+             background-color: lightsalmon;
+             color: #fff;
+         }
+         article {
+             width: 500px;
+             height: 300px;
+             border: 1px solid #ddd;
+             margin-top: 20px;
+             display: flex;
+             flex-direction: row;
+             justify-content: center;
+             align-items: center;
+         }
+         article img {
+             width: 100%;
+             height: auto;
+         }
+         .lazy-img {
+             animation: rotat infinite 3s linear;
+             width: 50px;
+             height: 50px;
+         }
+         @Keyframes rotat {
+             0% {
+                 transform: rotate(0deg);
+             }
+             50% {
+                 transform: rotate(180deg);
+             }
+             100% {
+                 transform: rotate(360deg);
+             }
+         }
+        </style>
+    </head>
+    <body>
+        <header>
+            <p>
+                图片懒加载
+            </p>
+        </header>
+        <main>
+            <nav>
+                <h3>占位</h3>
+            </nav>
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/1.jpg" />
+            </article>
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/2.jpg" />
+            </article>
+
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/3.jpg" />
+            </article>
+
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/4.jpg" />
+            </article>
+
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/5.jpg" />
+            </article>
+
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/6.jpg" />
+            </article>
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/7.jpg" />
+            </article>
+            <article>
+                <image class="lazy-img" src="./images/loading.png" data-src="./images/8.jpg" />
+            </article>
+        </main>
+        <script>
+         //监听 scroll 事件
+         //Element.getBoundingClientRect().top
+         //获得元素距离浏览器窗口顶部的 距离
+         //
+         (function(){
+             class lazy {
+                 constructor(selector){
+                     this.lazyImg = document.querySelectorAll(selector);
+                     this.init();
+                 }
+                 init(){
+                     if('IntersectionObserver' in window){
+                         this.observe();
+                     }else {
+                         window.scrollFun = this.throttle(this.judge);
+                         window.addEventListener('scroll', window.scrollFun);
+                     }
+                 }
+                 judge(){
+                     console.log('scroll');
+                     console.log(this);
+                     this.lazyImg.forEach((val,idx) => {
+                         let rectObj = val.getBoundingClientRect();
+                         // 如果当前元素距 视口 的距离 小于 视口的 高度
+                         // 此时元素处于可见范围
+                         if(rectObj.top < document.documentElement.clientHeight){
+                             let actualSrc = val.dataset.src;
+                             val.setAttribute('src',actualSrc);
+                             val.removeAttribute('class');
+                             if(idx === this.lazyImg.length - 1){
+                                 window.removeEventListener('scroll', window.scrollFun);
+                             }
+                         }
+                     });
+                 }
+                 observe(){
+                     let observer = new IntersectionObserver((entries, observer)=> {
+                         entries.forEach(entry => {
+                             if(entry.isIntersecting){
+                                 let _target = entry.target;
+                                 let actualSrc = _target.getAttribute('data-src');
+                                 _target.removeAttribute('class');
+                                 _target.setAttribute('src', actualSrc);
+                             }
+                         })
+                     });
+                     this.lazyImg.forEach(img => {
+                         observer.observe(img);
+                     })
+                 }
+                 throttle(fn){
+                     // 节流 200ms 触发一次函数
+                     let timer,
+                         that = this, // 这里留住 this 指向的是 throttle的 this(lazy)
+                         start = +new Date();
+                     return function(args){
+                         let _args = args,
+                             //that = this, // 这里留住 this 指向的是 scrollFun 的 this(window)
+                             now = +new Date();
+                         if(now - start > 500){
+                             start = now;
+                             clearTimeout(timer);
+                             timer = setTimeout(function(){
+                                 fn.call(that, _args);
+                             }, 500);
+                         }
+                     }
+                 }
+             }
+             new lazy('article img');
+         })();
+        </script>
+    </body>
+</html>

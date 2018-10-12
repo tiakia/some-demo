@@ -1,0 +1,46 @@
+<!--
+     * Author: tiankai
+     * Github: https://github.com/tiakia
+     * Email: tiankai0426@sina.com
+     * Page: canvas Demo
+     * Date: 09/19/18 15:32:48
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-title" content="canvas-demo">
+        <meta name="author" content="Tiankai">
+        <!--<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />-->
+        <title>canvas-demo</title>
+        <style>
+         #app {
+             text-align: center;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+         }
+         a {
+             display: inline-block;
+             padding: 5px 8px;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             margin-right: 10px;
+         }
+        </style>
+    </head>
+    <body>
+        <a href="./index.html">Home</a>
+        <a href="./granule.html">图片颗粒</a>
+        <div id="app">
+            <h1>Canvas 图片 - 蒙版</h1>
+            <div>
+                <img id="originImg"/>
+                <canvas id="mask"></canvas>
+            </div>
+        </div>
+        <script src="./js/mask.js"></script>
+    </body>
+</html>

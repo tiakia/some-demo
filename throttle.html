@@ -1,0 +1,104 @@
+<!--
+    * Author: tiankai
+    * Github: https://github.com/tiakia
+    * Email: tiankai0426@sina.com
+    * Page: 函数的防抖和节流
+    * Date: 09/06/18 10:53:31
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-title" content="函数的防抖和节流">
+    <meta name="author" content="Tiankai">
+    <!--<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />-->
+    <title>函数的防抖和节流</title>
+  </head>
+  <body>
+    <div id="app">
+        <h6>正常情况：</h6>
+        <input type="text" id="normal" />
+        <h6>函数的防抖：</h6>
+        <input type="text" id="debounce" />
+        <h6>函数的节流：</h6>
+        <input type="text" id="throttle" />
+    </div>
+    <hr/>
+    <h6>compositionstart && compositionend</h6>
+    <input type="text" id="inputChina" />
+    <script>
+     function debounce(fun, delay){
+         let timer;
+         return function(args){
+             let that = this,
+                 _args = args;
+             clearTimeout(timer);
+             timer = setTimeout(function(){
+                 fun.call(that, _args);
+             }, delay)
+         }
+     }
+     function testInput(e){
+         console.log("Value: " + e.target.value + "\n" + new Date());
+     }
+     let normalInput = document.getElementById('normal'),
+         debounceInput = document.getElementById('debounce'),
+         throttleInput = document.getElementById('throttle');
+     // normal
+     normalInput.addEventListener('input', function(e){
+         testInput(e);
+     }, false);
+     // debounce
+     let debounceFunc = debounce(testInput, 500);
+     debounceInput.addEventListener('input', function(e){
+         debounceFunc(e);
+     }, false);
+     // throttle
+     function throttle(fun, delay){
+         let last = +new Date(), timer;
+         return function(args){
+             let that = this,
+                 _args = args,
+                 now = +new Date();
+             if(last && (now - last > delay)){
+                 last = now;
+                 clearTimeout(timer);
+                 timer = setTimeout(function(){
+                     fun.call(that, _args);
+                 }, delay)
+             }
+         }
+     }
+     let throttleFunc = throttle(testInput, 1000);
+     throttleInput.addEventListener('input', function(e){
+         throttleFunc(e);
+     }, false);
+    </script>
+    <!-- 处理中文输入问题 -->
+    <script>
+     let inputChina = document.getElementById('inputChina'),
+         isLock = true,
+         timer = null;
+     inputChina.addEventListener('compositionstart', function(e){
+         isLock = true;
+         console.log('compositionstart: ' + e.target.value + "\n" + new Date().toLocaleString());
+     });
+     inputChina.addEventListener('input', function(e){
+         console.log('input: ' + e.target.value + "\n" + new Date().toLocaleString());
+         timer = setTimeout(() =>{
+             if(!isLock){
+                 console.log("correct: " + e.target.value + "\n" + new Date().toLocaleString());
+             }
+         } ,0);
+         timer = null;
+     });
+     inputChina.addEventListener('compositionend', function(e){
+         isLock = false;
+         console.log('compositionend: '+ e.target.value + "\n" + new Date().toLocaleString());
+     });
+    </script>
+  </body>
+</html>

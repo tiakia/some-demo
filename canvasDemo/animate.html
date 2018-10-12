@@ -1,0 +1,74 @@
+<!--
+     * Author: tiankai
+     * Github: https://github.com/tiakia
+     * Email: tiankai0426@sina.com
+     * Page: 弹簧动效
+     * Date: 10/09/18 10:49:56
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-title" content="弹簧动效">
+        <meta name="author" content="Tiankai">
+        <!--<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />-->
+        <title>弹簧动效</title>
+        <style>
+        #btn {
+            margin: 10px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #ddd;
+            padding: 5px 8px;
+            color: red;
+            outline: none;
+        }
+        #square {
+            width: 0px;
+            height: 0px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        #square.active {
+            border: 2px solid red;
+            width: 150px;
+            height: 150px;
+            animation: spring-show 1s linear;
+        }
+        @keyframes spring-show {
+            0% {
+                transform: scale(0);
+            }
+            90% {
+                transform: scale(1);
+            }
+            /* 先放大一点 */
+            95% {
+                transform: scale(1.1);
+            }
+            /* 然后再缩回去 */
+            100% {
+                transform: scale(1);
+            }
+        }
+       </style>
+    </head>
+    <body>
+        <div id="app">
+            <button id="btn" onclick="play()">open</button>
+            <div id="square"></div>
+        </div>
+        <script>
+         function play(){
+             let btn = document.getElementById("btn"),
+                 square = document.getElementById('square');
+             let isPlay = square.className === 'active';
+             let _className = isPlay ? '' : 'active';
+             square.className = _className;
+         }
+        </script>
+    </body>
+</html>
